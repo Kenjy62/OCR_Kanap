@@ -71,14 +71,19 @@ fetch('http://127.0.0.1:3000/api/products/' + product_id)
     // Check if product is already in basket
     let checker = editable_basket.find(product => product.id == product_id && product.color == product_color)
 
-    // If is already in basket with the same color, increase the quantity by new quantity selected (default : 5, new : 10 = 5 + 10)
+    // If is already in basket with the same color, increase the quantity by new quantity selected (default : 5, new : 10 = 5 + 10) (max : 100)
     if(checker){
       let product_index = editable_basket.findIndex(product => product.id == product_id && product.color == product_color)
       let product_quantity_calculator = parseInt(product_quantity) + parseInt(editable_basket[product_index].quantity)
-      editable_basket[product_index].quantity = product_quantity_calculator
 
-      // Save into user LocalStorage
-      localStorage.setItem('basket', JSON.stringify(editable_basket))
+      // If current quantity + new quantity <= 100
+      if(product_quantity_calculator <= 100){
+        editable_basket[product_index].quantity = product_quantity_calculator
+        // Save into user LocalStorage
+        localStorage.setItem('basket', JSON.stringify(editable_basket))
+      } else {
+        alert('La quantité maximal ne peut être supérieure à 100.')
+      }
     } else {
     // Add the product to Array
       let product = {

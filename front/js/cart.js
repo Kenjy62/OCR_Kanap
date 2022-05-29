@@ -151,6 +151,10 @@ function totalCalculator(id, quantity, color, option){
             // Update DOM Total Price & Quantity
             totalQuantity.textContent = totalQuantityCalculator
             totalPrice.textContent = new_total_price
+
+            // Re-defined a totalprice calculator
+            calculator = new_total_price
+            
             break;
         }
 
@@ -210,7 +214,11 @@ window.onload = function() {
             let new_quantity = this.value
 
             // Calculate the new total price and quantity
-            totalCalculator(id_update, new_quantity, color_update, 'update')
+            if(new_quantity <= 100 && new_quantity > 0){
+                totalCalculator(id_update, new_quantity, color_update, 'update')
+            } else {
+                alert('La quantité doit être compris entre 0 et 100')
+            }
 
     })}
 
@@ -219,6 +227,8 @@ window.onload = function() {
 
     orderBtn.addEventListener('click', function(){
 
+        // Verify if basket  is not not empty
+        if(JSON.parse(getBasket()).length > 0){
         // Initialize a custom validator
         let _validator = 0;
 
@@ -300,7 +310,7 @@ window.onload = function() {
         }
 
         // If Custom validator == 5 (all input form it's valid)
-        if(_validator == 5){
+        if(_validator == 5 && calculator != 0 && totalQuantityCalculator != 0){
 
             // Re-Get client basket from LocalStorage
             let array = JSON.parse(getBasket())
@@ -320,7 +330,10 @@ window.onload = function() {
             })
             .then((res) => res.json()).then((data) => document.location.href = './confirmation.html?orderId='+ data.orderId)
         } else {
-            // ERROR
+           // ERROR
+        }
+        } else {
+            alert('Nous ne pouvons pas valider un panier vide !')
         }
     })
 };
